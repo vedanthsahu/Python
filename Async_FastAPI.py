@@ -64,9 +64,11 @@ async def getdata() -> str:
 
         return str(r1.status_code) +str(r2.status_code)
     
-# The main difference here is that there are some functionaliies which we have to execute
-# But these executions can wait for a while, sending instant response to the user is more important
-#So we can create a background task which can run the AFTER CLIENT CALL things, like logging or sending email
+
+'''
+Here blocked means when the CPU is idle, like read file or wait for API response, 
+In these cases we can do other task as CPU is idle. These cases are where FastAPI is most dominant
+'''
 
 
 
