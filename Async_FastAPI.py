@@ -57,7 +57,6 @@ async def getdata(background: BackgroundTasks) -> str:
     - sequential awaits → slower, non-concurrent
     - BackgroundTasks → run AFTER returning response (not concurrent)
     """
-
     async with httpx.AsyncClient() as client:
 
         # --------------------------------------------------------------
@@ -104,8 +103,6 @@ async def getdata(background: BackgroundTasks) -> str:
             f"{r4.status_code}"
         )
 
-
-
 # ----------------------------------------------------------------------
 # Explanation of async usage:
 #
@@ -116,3 +113,16 @@ async def getdata(background: BackgroundTasks) -> str:
 # GIL allows only ONE thread to execute Python bytecode at a time, but it
 # releases during I/O, allowing concurrency in I/O tasks.
 # ----------------------------------------------------------------------
+
+async def cpuHeavyTask(var : str) -> None:
+    loop = asyncio.get_running_loop()
+    result = await loop.run_in_executor(None, "HeavyTask", 10)
+    return result
+
+'''
+This is used when we have a CPU heavy task which we have to do
+but using the same thread will make all other processes blocked
+so to deal with this, we can move this heavy task to another thread in this way we can makesure
+That the initial thread is not blocked and can continue other tasks and 
+once the result is ready we can use the result.
+'''
