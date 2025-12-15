@@ -55,3 +55,44 @@ print(response1)
 print(response1.content)
 
 from langchain.messages import HumanMessage
+
+
+from langchain.tools import tool
+
+@tool
+def search_database(query :str) -> None:
+    """
+    here we connect with the database"""
+    pass
+#We can give custom names for any tool
+@tool("Web_search")
+def search(query : str) -> None:
+    return "This is the result of search"
+print(search.name) #Prints : Web_search
+
+#Now that we have created a tool and gave custom name, we can give custom description
+@tool("calculator", description = "This is to perform arthemetic operations")
+def calc(extression : str) -> None:
+    pass
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class weatherInput(BaseModel):
+    location : str = Field(description="This is the city name")
+    units : Literal["celcious", "fahrenheit"] = Field(
+        default="celcious",
+        description="THis is the units of temperature"
+    )
+    include_forecast: bool = Field(
+        default=False,
+        description="Include 5 days of forcast"
+    )
+
+@tool(infer_schema=weatherInput)
+def getweather(location: str, units="celcious", include_forecast=False):
+    """Get current weather and optional forecast."""
+    temp = 22 if units == "celsius" else 72
+    result = f"Current weather in {location}: {temp} degrees {units[0].upper()}"
+    if include_forecast:
+        result += "\nNext 5 days: Sunny"
+    return result
