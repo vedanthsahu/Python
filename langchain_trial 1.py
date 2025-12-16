@@ -96,3 +96,59 @@ def getweather(location: str, units="celcious", include_forecast=False):
     if include_forecast:
         result += "\nNext 5 days: Sunny"
     return result
+
+#We can also make use of json schema type of class declaration and this is actually similar to how Langchain parses the pydantic schema and evaluate 
+
+#@tool is like a wrapper which is useful when we want to use tools used by LLM, 
+#We have to explecitly give the list of available tools and Langchain uses this @tool to serialize the function
+#and give the meta data which can be given to the LLM to choose what is the function about.
+
+from langchain.tools import ToolRuntime, tool
+
+@tool
+def foo(runtime: ToolRuntime):
+    messages = runtime.state["messages"]
+
+    return
+#There are many other things which we can use in Tools, like state, tool_caller_id etc, 
+"""
+Runtime context automatically injected into tools.
+
+When a tool function has a parameter named tool_runtime with type hint ToolRuntime, the tool execution system will automatically inject an instance containing:
+
+state: The current graph state
+tool_call_id: The ID of the current tool call
+config: RunnableConfig for the current execution
+context: Runtime context (from langgraph Runtime)
+store: BaseStore instance for persistent storage (from langgraph Runtime)
+stream_writer: StreamWriter for streaming output (from langgraph Runtime)
+No Annotated wrapper is needed - just use runtime: ToolRuntime as a parameter.
+
+Example:
+
+        from langchain_core.tools import tool
+        from langchain.tools import ToolRuntime
+
+        @tool
+        def my_tool(x: int, runtime: ToolRuntime) -> str:
+            Tool that accesses runtime context.
+            # Access state
+            messages = tool_runtime.state["messages"]
+
+            # Access tool_call_id
+            print(f"Tool call ID: {tool_runtime.tool_call_id}")
+
+            # Access config
+            print(f"Run ID: {tool_runtime.config.get('run_id')}")
+
+            # Access runtime context
+            user_id = tool_runtime.context.get("user_id")
+
+            # Access store
+            tool_runtime.store.put(("metrics",), "count", 1)
+
+            # Stream output
+            tool_runtime.stream_writer.write("Processing...")
+
+            return f"Processed {x}"
+            """
